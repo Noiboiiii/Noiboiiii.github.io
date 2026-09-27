@@ -1,41 +1,31 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="utf-8">
+    <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Worker Connection</title>
 </head>
 <body>
     <h1>Worker Connection</h1>
-    <pre id="output" role="status" aria-live="polite">Loading data from the Worker...</pre>
+    <div id="output">Loading data from Worker...</div>
 
     <script>
-        "use strict";
-
         const workerUrl = "https://workernamedomainnameworkersdev.aaron2011175.workers.dev/";
         const output = document.getElementById("output");
 
-        async function loadWorkerData() {
-            try {
-                const response = await fetch(workerUrl, {
-                    method: "GET",
-                    mode: "cors",
-                    credentials: "omit"
-                });
-
-                const data = await response.text();
-
+        fetch(workerUrl)
+            .then(response => {
                 if (!response.ok) {
-                    throw new Error(`Worker returned HTTP ${response.status}${data ? `: ${data}` : ""}`);
+                    throw new Error(`Worker returned HTTP ${response.status}`);
                 }
-
-                output.textContent = data || "The Worker returned an empty response.";
-            } catch (error) {
+                return response.text();
+            })
+            .then(data => {
+                output.textContent = data;
+            })
+            .catch(error => {
                 output.textContent = `Error loading Worker data: ${error.message}`;
-            }
-        }
-
-        loadWorkerData();
+            });
     </script>
 </body>
 </html>
