@@ -1,9 +1,41 @@
-<!DOCTYPE html>
-<html>
+<!doctype html>
+<html lang="en">
 <head>
-    <title>My Proxy Page</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Worker Connection</title>
 </head>
 <body>
-    <h1>It worked! Securly didn't block this!</h1>
+    <h1>Worker Connection</h1>
+    <pre id="output" role="status" aria-live="polite">Loading data from the Worker...</pre>
+
+    <script>
+        "use strict";
+
+        const workerUrl = "https://workernamedomainnameworkersdev.aaron2011175.workers.dev/";
+        const output = document.getElementById("output");
+
+        async function loadWorkerData() {
+            try {
+                const response = await fetch(workerUrl, {
+                    method: "GET",
+                    mode: "cors",
+                    credentials: "omit"
+                });
+
+                const data = await response.text();
+
+                if (!response.ok) {
+                    throw new Error(`Worker returned HTTP ${response.status}${data ? `: ${data}` : ""}`);
+                }
+
+                output.textContent = data || "The Worker returned an empty response.";
+            } catch (error) {
+                output.textContent = `Error loading Worker data: ${error.message}`;
+            }
+        }
+
+        loadWorkerData();
+    </script>
 </body>
-</html> 
+</html>
